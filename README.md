@@ -1,1 +1,1 @@
-# MadGBT
+# MadGPT
