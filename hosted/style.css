@@ -1,0 +1,196 @@
+@import url('https://fonts.googleapis.com/css2?family=Indie+Flower&display=swap');
+
+html, body {
+  overscroll-behavior: contain;
+}
+
+html {
+  font-size: 24px;
+}
+
+body {
+  color: black;
+  background: linear-gradient(to bottom right, AntiqueWhite, BurlyWood) fixed;
+  padding: 0 2rem;
+}
+
+#logo {
+  max-width: 480px;
+  display: block;
+  margin: 1rem auto;
+}
+
+#screens>div {
+  text-align: center;
+  display: none;
+}
+
+#screens>div>* {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+#screens>div.activeScreen {
+  display: block;
+}
+
+#aiDisclaimer {
+  margin-top: 1rem;
+}
+
+#aiDisclaimer, #errorMessage {
+  max-width: 640px;
+}
+
+#fillInBlanksForm, #playAgainButton {
+  margin-bottom: 2rem;
+}
+
+#fillInBlanksFormBlanks {
+  width: min-content;
+  margin: 0 auto;
+}
+
+#fillInBlanksFormBlanks>div {
+  display: flex;
+  justify-content: end;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+#fillInBlanksFormBlanks>div>label {
+  text-align: right;
+}
+
+#fillInBlanksFormBlanks>div>input {
+  width: 10rem;
+}
+
+input[type=text] {
+  background: transparent;
+  padding: 0.125rem;
+  border: 0;
+  border-bottom: 0.125rem solid black;
+  outline: none;
+}
+
+input[type=text], .filledInWord {
+  font-family: 'Indie Flower', sans-serif;
+}
+
+input[type=text].formMissedRequirement {
+  outline: dashed 0.125rem red;
+}
+
+#finishedStory {
+  width: 67%;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: justify;
+}
+
+@media only screen and (max-width: 720px) {
+  html {
+    font-size: 18px;
+  }
+
+  #logo {
+    max-width: 320px;
+  }
+
+  #fillInBlanksFormBlanks>div {
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+  
+  #fillInBlanksFormBlanks>div>label {
+    text-align: center;
+  }
+
+  #finishedStory {
+    width: 100%;
+  }
+}
+
+/* https://loading.io/css/ */
+
+.lds-grid {
+  display: inline-block;
+  position: relative;
+  width: 80px;
+  height: 80px;
+}
+
+.lds-grid div {
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: black;
+  animation: lds-grid 1.2s linear infinite;
+}
+
+.lds-grid div:nth-child(1) {
+  top: 8px;
+  left: 8px;
+  animation-delay: 0s;
+}
+
+.lds-grid div:nth-child(2) {
+  top: 8px;
+  left: 32px;
+  animation-delay: -0.4s;
+}
+
+.lds-grid div:nth-child(3) {
+  top: 8px;
+  left: 56px;
+  animation-delay: -0.8s;
+}
+
+.lds-grid div:nth-child(4) {
+  top: 32px;
+  left: 8px;
+  animation-delay: -0.4s;
+}
+
+.lds-grid div:nth-child(5) {
+  top: 32px;
+  left: 32px;
+  animation-delay: -0.8s;
+}
+
+.lds-grid div:nth-child(6) {
+  top: 32px;
+  left: 56px;
+  animation-delay: -1.2s;
+}
+
+.lds-grid div:nth-child(7) {
+  top: 56px;
+  left: 8px;
+  animation-delay: -0.8s;
+}
+
+.lds-grid div:nth-child(8) {
+  top: 56px;
+  left: 32px;
+  animation-delay: -1.2s;
+}
+
+.lds-grid div:nth-child(9) {
+  top: 56px;
+  left: 56px;
+  animation-delay: -1.6s;
+}
+
+@keyframes lds-grid {
+  0%, 100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.5;
+  }
+}
