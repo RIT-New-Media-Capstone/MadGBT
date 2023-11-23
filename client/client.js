@@ -1,7 +1,32 @@
+// Import OpenAI
+import { config } from "dotenv";
+config();
+import OpenAI from "openai"
+
 // Global variables
 let screens = {};
 let els = {};
 let blanksFilledInCallback;
+
+
+
+// Handle API request
+async function apiData(list = '[verb, noun, place, thing]') {
+  const inputList = list;
+  try {
+      const response = await openai.chat.completions.create({
+          model: "gpt-3.5-turbo-1106",
+          messages: [{role: "user", content: `Generate a madlibs prompt that uses each category from this list at least twice ${inputList}`}]
+      }).then(res => {
+          console.log(res.choices[0].message);
+      });
+      
+      return response;
+
+  } catch(error) {
+      console.log(error);
+  }
+}
 
 // Scroll to top of page
 const scrollToTop = () => {
