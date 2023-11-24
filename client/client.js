@@ -13,6 +13,7 @@ let blanksFilledInCallback;
 // Handle API request
 async function apiData(list = '[verb, noun, place, thing]') {
   const inputList = list;
+  const openai = new OpenAI();
   try {
       const response = await openai.chat.completions.create({
           model: "gpt-3.5-turbo-1106",
@@ -91,6 +92,7 @@ const exitWithError = (message) => {
 // Validate "fill in the blanks" form input and call "blanksFilledInCallback"
 // with the user's respectively-ordered inputs if successful
 const fillInBlanksFormHandler = (evt) => {
+  console.log("working");
   evt.preventDefault();
   const blankFills = [];
   let noMissedRequirements = true;
@@ -112,6 +114,8 @@ const fillInBlanksFormHandler = (evt) => {
 };
 
 const init = () => {
+  console.log("working");
+ // const data = apiData();
   // List of screens that will be seen during gameplay (entering game code, drawing, waiting, etc.)
   screens = elementDictionary([
     'start',
@@ -137,12 +141,16 @@ const init = () => {
 
   // THE CODE BELOW IS PLACEHOLDER BEHAVIOR
 
-  els.startGameButton.onclick = () => promptToFillInBlanks(['Verb', 'Place', 'Thing']);
+  els.startGameButton.onclick = () => promptToFillInBlanks(['Verb', 'Place', 'Thing', 'Test1', 'Test2']);
   els.playAgainButton.onclick = () => promptToFillInBlanks(['Verb', 'Place', 'Thing']);
   blanksFilledInCallback = (e) => {
     const spans = e.map((f) => `<span class="filledInWord">${f}</span>`);
     seeResults(`Let's all ${spans[0]} to the ${spans[1]}, let's all ${spans[0]} to the ${spans[1]}. Let's all ${spans[0]} to the ${spans[1]}, to get ourselves a ${spans[2]}.`);
+
+    
+    
   };
+  
 };
 
 window.onload = init;
