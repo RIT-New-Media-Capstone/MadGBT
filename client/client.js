@@ -1,7 +1,3 @@
-// Import OpenAI
-import { config } from "dotenv";
-config();
-import OpenAI from "openai"
 
 // Global variables
 let screens = {};
@@ -114,8 +110,7 @@ const fillInBlanksFormHandler = (evt) => {
 };
 
 const init = () => {
-  console.log("working");
- // const data = apiData();
+  
   // List of screens that will be seen during gameplay (entering game code, drawing, waiting, etc.)
   screens = elementDictionary([
     'start',
