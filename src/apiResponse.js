@@ -2,7 +2,8 @@ const axios = require('axios');
 
 const getApi = (req, res) => {
      // Make the API call to OpenAI
-     const openaiApiKey = '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';
+     
+     const openaiApiKey = process.env.API_KEY;
 
      const requestData = {
         model: 'gpt-3.5-turbo',
