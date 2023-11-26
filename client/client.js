@@ -7,18 +7,14 @@ let blanksFilledInCallback;
 
 
 // Handle API request
-async function apiData(list = '[verb, noun, place, thing]') {
-  const inputList = list;
-  const openai = new OpenAI();
+ function fetchData() {
   try {
-      const response = await openai.chat.completions.create({
-          model: "gpt-3.5-turbo-1106",
-          messages: [{role: "user", content: `Generate a madlibs prompt that uses each category from this list at least twice ${inputList}`}]
-      }).then(res => {
-          console.log(res.choices[0].message);
-      });
-      
-      return response;
+     fetch('/generate-story')
+     .then(response => response.json())
+     .then(data => { return data.content })
+     .catch(error => {
+      console.log(error);
+     })
 
   } catch(error) {
       console.log(error);
@@ -109,8 +105,9 @@ const fillInBlanksFormHandler = (evt) => {
   }
 };
 
-const init = () => {
-
+const init = async() => {
+  const madlibPrompt = await fetchData();
+  console.log(madlibPrompt);
   // List of screens that will be seen during gameplay (entering game code, drawing, waiting, etc.)
   screens = elementDictionary([
     'start',
