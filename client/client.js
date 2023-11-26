@@ -110,7 +110,7 @@ const fillInBlanksFormHandler = (evt) => {
 };
 
 const init = () => {
-  
+
   // List of screens that will be seen during gameplay (entering game code, drawing, waiting, etc.)
   screens = elementDictionary([
     'start',
@@ -136,7 +136,7 @@ const init = () => {
 
   // THE CODE BELOW IS PLACEHOLDER BEHAVIOR
 
-  els.startGameButton.onclick = () => promptToFillInBlanks(['Verb', 'Place', 'Thing', 'Test1', 'Test2']);
+  els.startGameButton.onclick = () => promptToFillInBlanks(['Verb', 'Place', 'Thing']);
   els.playAgainButton.onclick = () => promptToFillInBlanks(['Verb', 'Place', 'Thing']);
   blanksFilledInCallback = (e) => {
     const spans = e.map((f) => `<span class="filledInWord">${f}</span>`);
