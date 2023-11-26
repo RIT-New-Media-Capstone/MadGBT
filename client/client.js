@@ -1,7 +1,29 @@
+
 // Global variables
 let screens = {};
 let els = {};
 let blanksFilledInCallback;
+
+
+
+// Handle API request
+async function apiData(list = '[verb, noun, place, thing]') {
+  const inputList = list;
+  const openai = new OpenAI();
+  try {
+      const response = await openai.chat.completions.create({
+          model: "gpt-3.5-turbo-1106",
+          messages: [{role: "user", content: `Generate a madlibs prompt that uses each category from this list at least twice ${inputList}`}]
+      }).then(res => {
+          console.log(res.choices[0].message);
+      });
+      
+      return response;
+
+  } catch(error) {
+      console.log(error);
+  }
+}
 
 // Scroll to top of page
 const scrollToTop = () => {
@@ -66,6 +88,7 @@ const exitWithError = (message) => {
 // Validate "fill in the blanks" form input and call "blanksFilledInCallback"
 // with the user's respectively-ordered inputs if successful
 const fillInBlanksFormHandler = (evt) => {
+  console.log("working");
   evt.preventDefault();
   const blankFills = [];
   let noMissedRequirements = true;
@@ -87,6 +110,7 @@ const fillInBlanksFormHandler = (evt) => {
 };
 
 const init = () => {
+
   // List of screens that will be seen during gameplay (entering game code, drawing, waiting, etc.)
   screens = elementDictionary([
     'start',
@@ -117,7 +141,11 @@ const init = () => {
   blanksFilledInCallback = (e) => {
     const spans = e.map((f) => `<span class="filledInWord">${f}</span>`);
     seeResults(`Let's all ${spans[0]} to the ${spans[1]}, let's all ${spans[0]} to the ${spans[1]}. Let's all ${spans[0]} to the ${spans[1]}, to get ourselves a ${spans[2]}.`);
+
+    
+    
   };
+  
 };
 
 window.onload = init;
