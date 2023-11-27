@@ -7,11 +7,13 @@ let blanksFilledInCallback;
 
 
 // Handle API request
- function fetchData() {
+function fetchData() {
   try {
      fetch('/generate-story')
      .then(response => response.json())
-     .then(data => { return data.content })
+     .then(data => { 
+       console.log("content", data.content)
+       return data.content })
      .catch(error => {
       console.log(error);
      })
@@ -105,7 +107,7 @@ const fillInBlanksFormHandler = (evt) => {
   }
 }; 
 
-const getWordTypes = (prompt) => {
+const getWordTypes = async(prompt) => {
   console.log("prompt", prompt);
   let helper = [];
   let wordTypes = [];
@@ -126,13 +128,27 @@ const getWordTypes = (prompt) => {
       wordTypes.push(ans);
     } 
   } 
-  console.log("helper", helper);
   console.log("wordTypes", wordTypes)
+  return wordTypes;
 };
 
+const buildStory = (wordInput, wordTypes, prompt) => {
+  let story = prompt;
+  for(let i = 0; i < wordInput.length; i++){
+    console.log(`[${wordTypes[i]}]`, wordInput[i])
+    console.log(    story.replace(`[${wordTypes[i]}]`, wordInput[i]))
+    story = story.replace(`[${wordTypes[i]}]`, wordInput[i])
+  }
+  return story;
+}
+	
+
 const init = async() => {
-  const madlibPrompt = await fetchData();
-  console.log(madlibPrompt);
+  let wordTypes = [];
+  // const madlibPrompt = await fetchData().then((response) => {
+  //   wordTypes = getWordTypes(response);
+  // });
+
   // List of screens that will be seen during gameplay (entering game code, drawing, waiting, etc.)
   screens = elementDictionary([
     'start',
@@ -160,9 +176,18 @@ const init = async() => {
 
   els.startGameButton.onclick = () => promptToFillInBlanks(['Verb', 'Place', 'Thing']);
   els.playAgainButton.onclick = () => promptToFillInBlanks(['Verb', 'Place', 'Thing']);
+
+  //els.startGameButton.onclick = () => promptToFillInBlanks(wordTypes);
+  //els.playAgainButton.onclick = () => promptToFillInBlanks(wordTypes);
   blanksFilledInCallback = (e) => {
     const spans = e.map((f) => `<span class="filledInWord">${f}</span>`);
-    seeResults(`Let's all ${spans[0]} to the ${spans[1]}, let's all ${spans[0]} to the ${spans[1]}. Let's all ${spans[0]} to the ${spans[1]}, to get ourselves a ${spans[2]}.`);
+    //seeResults(`Let's all ${spans[0]} to the ${spans[1]}, let's all ${spans[0]} to the ${spans[1]}. Let's all ${spans[0]} to the ${spans[1]}, to get ourselves a ${spans[2]}.`);
+    
+    let a = ['bob', 'jump', 'healthy'];
+    let b = ['noun', 'verb', 'adj'];
+    let c = "howdy we [noun] are going to [verb] sfkf jdf [adj]"
+    seeResults(buildStory(a, b, c));
+    //seeResults(buildStory(spans, wordTypes, madlibPrompt));
 
     
     
