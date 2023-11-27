@@ -103,6 +103,31 @@ const fillInBlanksFormHandler = (evt) => {
   } else {
     scrollToTop();
   }
+}; 
+
+const getWordTypes = (prompt) => {
+  console.log("prompt", prompt);
+  let helper = [];
+  let wordTypes = [];
+  for(let i = 0; i < prompt.length; i++) { 
+    if (prompt[i] == '[') { 
+      helper.push(i); 
+    } else if ((prompt[i] == ']') && (helper.length > 0)) { 
+      let pos = helper[helper.length - 1]; 
+      helper.pop(); 
+
+      let len = i - 1 - pos; 
+      let ans; 
+      if(pos < len) { 
+        ans = prompt.substring(pos + 1, len + 1); 
+      } else { 
+        ans = prompt.substring(pos + 1, len + pos + 1); 
+      } 
+      wordTypes.push(ans);
+    } 
+  } 
+  console.log("helper", helper);
+  console.log("wordTypes", wordTypes)
 };
 
 const init = async() => {
