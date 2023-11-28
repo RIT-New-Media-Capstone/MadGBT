@@ -134,6 +134,7 @@ const getWordTypes = async(prompt) => {
 
 const buildStory = (wordInput, wordTypes, prompt) => {
   let story = prompt;
+  //goes through word type array and replaces with user input in the prompt
   for(let i = 0; i < wordInput.length; i++){
     console.log(`[${wordTypes[i]}]`, wordInput[i])
     console.log(    story.replace(`[${wordTypes[i]}]`, wordInput[i]))
@@ -145,9 +146,9 @@ const buildStory = (wordInput, wordTypes, prompt) => {
 
 const init = async() => {
   let wordTypes = [];
-  // const madlibPrompt = await fetchData().then((response) => {
-  //   wordTypes = getWordTypes(response);
-  // });
+  const madlibPrompt = await fetchData().then((response) => {
+    wordTypes = getWordTypes(response);
+  });
 
   // List of screens that will be seen during gameplay (entering game code, drawing, waiting, etc.)
   screens = elementDictionary([
@@ -174,20 +175,19 @@ const init = async() => {
 
   // THE CODE BELOW IS PLACEHOLDER BEHAVIOR
 
-  els.startGameButton.onclick = () => promptToFillInBlanks(['Verb', 'Place', 'Thing']);
-  els.playAgainButton.onclick = () => promptToFillInBlanks(['Verb', 'Place', 'Thing']);
+  //els.startGameButton.onclick = () => promptToFillInBlanks(['Verb', 'Place', 'Thing']);
+  //els.playAgainButton.onclick = () => promptToFillInBlanks(['Verb', 'Place', 'Thing']);
 
-  //els.startGameButton.onclick = () => promptToFillInBlanks(wordTypes);
-  //els.playAgainButton.onclick = () => promptToFillInBlanks(wordTypes);
+  //replace dummy data array with wordTypes array
+  els.startGameButton.onclick = () => promptToFillInBlanks(wordTypes);
+  els.playAgainButton.onclick = () => promptToFillInBlanks(wordTypes);
+
   blanksFilledInCallback = (e) => {
-    const spans = e.map((f) => `<span class="filledInWord">${f}</span>`);
+    //const spans = e.map((f) => `<span class="filledInWord">${f}</span>`);
     //seeResults(`Let's all ${spans[0]} to the ${spans[1]}, let's all ${spans[0]} to the ${spans[1]}. Let's all ${spans[0]} to the ${spans[1]}, to get ourselves a ${spans[2]}.`);
-    
-    let a = ['bob', 'jump', 'healthy'];
-    let b = ['noun', 'verb', 'adj'];
-    let c = "howdy we [noun] are going to [verb] sfkf jdf [adj]"
-    seeResults(buildStory(a, b, c));
-    //seeResults(buildStory(spans, wordTypes, madlibPrompt));
+
+    //get string of completed story with word types, user input, and prompt
+    seeResults(buildStory(spans, wordTypes, madlibPrompt));
 
     
     
