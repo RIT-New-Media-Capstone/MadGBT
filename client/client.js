@@ -102,7 +102,7 @@ const fillInBlanksFormHandler = (evt) => {
 
 const init = async() => {
   madlibPrompt = await fetchData();
-  console.log(madlibPrompt);
+  //console.log(madlibPrompt);
   // List of screens that will be seen during gameplay (entering game code, drawing, waiting, etc.)
   screens = elementDictionary([
     'start',
@@ -134,10 +134,7 @@ const init = async() => {
     const spans = e.map((f) => `<span class="filledInWord">${f}</span>`);
     seeResults(`Let's all ${spans[0]} to the ${spans[1]}, let's all ${spans[0]} to the ${spans[1]}. Let's all ${spans[0]} to the ${spans[1]}, to get ourselves a ${spans[2]}.`);
 
-    
-    
   };
-  
 };
 
 window.onload = init;
