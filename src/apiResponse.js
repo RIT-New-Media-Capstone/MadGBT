@@ -43,7 +43,7 @@ const generateImage = async (req, res) => {
 
   const requestData = {
     model: 'dall-e-3',
-    prompt: "a beautiful cat", //req.body.prompt,
+    prompt: req.body.prompt,
     size: "1024x1024",
     quality: "standard",
     response_format: "url",
