@@ -39,7 +39,7 @@ const getApi = async (req, res) => {
 const generateImage = async (req, res) => {
   // Make the API call to OpenAI
 
-  const openaiApiKey = "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";
+  const openaiApiKey = process.env.API_KEY;
 
   const requestData = {
     model: 'dall-e-3',
