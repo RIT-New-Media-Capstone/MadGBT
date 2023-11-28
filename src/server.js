@@ -15,6 +15,7 @@ const urlStruct = {
   '/bundle.js': htmlHandler.getJS,
   '/logo.svg': htmlHandler.getLogo,
   '/generate-story': apiHandler.getApi,
+  '/generate-image': apiHandler.generateImage,
   notFound: htmlHandler.getIndex,
 };
 
