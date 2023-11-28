@@ -1,8 +1,9 @@
 const axios = require('axios');
 
-const getApi = (req, res) => {
+const getApi = async (req, res) => {
      // Make the API call to OpenAI
-    
+     
+    // process.env.API_KEY
      const openaiApiKey = process.env.API_KEY;
 
      const requestData = {
