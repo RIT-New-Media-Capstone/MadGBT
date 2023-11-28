@@ -4,7 +4,7 @@ const getApi = async (req, res) => {
      // Make the API call to OpenAI
      
     // process.env.API_KEY
-     const openaiApiKey = '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';
+     const openaiApiKey = process.env.API_KEY;
 
      const requestData = {
         model: 'gpt-3.5-turbo',
