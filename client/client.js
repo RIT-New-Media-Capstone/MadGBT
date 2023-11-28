@@ -7,7 +7,7 @@ let blanksFilledInCallback;
 
 
 // Handle API request
- function fetchData() {
+ async function fetchData() {
   try {
      fetch('/generate-story')
      .then(response => response.json())
