@@ -73,7 +73,20 @@ const promptToFillInBlanks = (wordTypes) => {
 
 // Go to results screen with story
 const seeResults = (storyHTML) => {
-  els.finishedStory.innerHTML = storyHTML;
+  let formattedHTML = "";
+  if(storyHTML.includes("Title:")) {
+    //format title of story
+    let indexStartStory = storyHTML.indexOf("\n");
+    let title = storyHTML.substring(storyHTML.indexOf("Title:") + 7, indexStartStory);
+    console.log("title", title)
+    formattedHTML += `<strong>${title}</strong><br>`;
+
+    //add rest of story
+    formattedHTML += storyHTML.substring(indexStartStory, storyHTML.length - 1);
+  } else {
+    formattedHTML = storyHTML;
+  }
+  els.finishedStory.innerHTML = formattedHTML;
   setScreen('results');
 };
 
@@ -108,7 +121,6 @@ const fillInBlanksFormHandler = (evt) => {
 }; 
 
 const getWordTypes = async(prompt) => {
-  console.log("prompt", prompt);
   let helper = [];
   let wordTypes = [];
   for(let i = 0; i < prompt.length; i++) { 
@@ -136,8 +148,6 @@ const buildStory = (wordInput, wordTypes, prompt) => {
   let story = prompt;
   //goes through word type array and replaces with user input in the prompt
   for(let i = 0; i < wordInput.length; i++){
-    console.log(`[${wordTypes[i]}]`, wordInput[i])
-    console.log(    story.replace(`[${wordTypes[i]}]`, wordInput[i]))
     story = story.replace(`[${wordTypes[i]}]`, wordInput[i])
   }
   return story;
@@ -145,7 +155,10 @@ const buildStory = (wordInput, wordTypes, prompt) => {
 	
 
 const init = async() => {
-  
+  //word types from story
+  let wordTypes = [];
+  let story;
+
   // List of screens that will be seen during gameplay (entering game code, drawing, waiting, etc.)
   screens = elementDictionary([
     'start',
@@ -179,15 +192,21 @@ const init = async() => {
   els.startGameButton.onclick = () => {
     //loading page
     waitWithMessage("Getting Prompt...")
-    let wordTypes = [];
+
     //grabbing story from api
     madlibPrompt = fetchData();
+
     madlibPrompt.then((response) => {
       console.log("response", response);
+
+      //assign story to response
+      story = response;
       //grab wordtypes
-      wordTypes = getWordTypes(response);
-      //go to fill in the blanks 
-      promptToFillInBlanks(wordTypes);
+      getWordTypes(response).then(types => {
+        //go to fill in the blanks 
+        promptToFillInBlanks(types);
+        wordTypes = types;
+      });
     });
     
   };
@@ -195,15 +214,21 @@ const init = async() => {
   els.playAgainButton.onclick = () => {
     //loading page
     waitWithMessage("Getting Prompt...")
-    let wordTypes = [];
+
     //grabbing story from api
     madlibPrompt = fetchData();
+
     madlibPrompt.then((response) => {
       console.log("response", response);
+
+      //assign story to response
+      story = response;
       //grab wordtypes
-      wordTypes = getWordTypes(response);
-      //go to fill in the blanks 
-      promptToFillInBlanks(wordTypes);
+      getWordTypes(response).then(types => {
+        //go to fill in the blanks 
+        promptToFillInBlanks(types);
+        wordTypes = types;
+      });
     });
   };
 
@@ -212,7 +237,7 @@ const init = async() => {
     //seeResults(`Let's all ${spans[0]} to the ${spans[1]}, let's all ${spans[0]} to the ${spans[1]}. Let's all ${spans[0]} to the ${spans[1]}, to get ourselves a ${spans[2]}.`);
 
     //get string of completed story with user input, word types, and prompt
-    seeResults(buildStory(e, wordTypes, madlibPrompt));
+    seeResults(buildStory(e, wordTypes, story));
   };
   
 };
