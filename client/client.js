@@ -148,7 +148,7 @@ const buildStory = (wordInput, wordTypes, prompt) => {
   let story = prompt;
   //goes through word type array and replaces with user input in the prompt
   for(let i = 0; i < wordInput.length; i++){
-    story = story.replace(`[${wordTypes[i]}]`, wordInput[i])
+    story = story.replace(`[${wordTypes[i]}]`, `<span style="color:red">${wordInput[i]}</span>`)
   }
   return story;
 }
