@@ -3,24 +3,17 @@
 let screens = {};
 let els = {};
 let blanksFilledInCallback;
-
+let madLibPrompt;
 
 
 // Handle API request
-function fetchData() {
-  try {
+ async function fetchData() {
      fetch('/generate-story')
      .then(response => response.json())
-     .then(data => { 
-       console.log("content", data.content)
-       return data.content })
+     .then(data => { console.log(data); return data.content; })
      .catch(error => {
       console.log(error);
-     })
-
-  } catch(error) {
-      console.log(error);
-  }
+     });
 }
 
 // Scroll to top of page
@@ -145,11 +138,13 @@ const buildStory = (wordInput, wordTypes, prompt) => {
 	
 
 const init = async() => {
+
   let wordTypes = [];
-  const madlibPrompt = await fetchData().then((response) => {
+  madlibPrompt = await fetchData().then((response) => {
     wordTypes = getWordTypes(response);
   });
-
+  console.log(madlibPrompt);
+  
   // List of screens that will be seen during gameplay (entering game code, drawing, waiting, etc.)
   screens = elementDictionary([
     'start',
