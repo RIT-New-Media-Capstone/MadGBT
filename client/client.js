@@ -8,12 +8,19 @@ let madLibPrompt;
 
 // Handle API request
  async function fetchData() {
-     fetch('/generate-story')
-     .then(response => response.json())
-     .then(data => { console.log(data); return data.content; })
-     .catch(error => {
-      console.log(error);
-     });
+    const response = await fetch('/generate-story');
+    if (!response.ok) {
+      const message = `An error has occured: ${response.status}`;
+      throw new Error(message);
+    }
+  
+    const data = await response.json();
+    return data.content;
+    //  .then(response => response.json())
+    //  .then(data => { console.log(data); return data.content; })
+    //  .catch(error => {
+    //   console.log(error);
+    //  });
 }
 
 // Scroll to top of page
@@ -66,7 +73,20 @@ const promptToFillInBlanks = (wordTypes) => {
 
 // Go to results screen with story
 const seeResults = (storyHTML) => {
-  els.finishedStory.innerHTML = storyHTML;
+  let formattedHTML = "";
+  if(storyHTML.includes("Title:")) {
+    //format title of story
+    let indexStartStory = storyHTML.indexOf("\n");
+    let title = storyHTML.substring(storyHTML.indexOf("Title:") + 7, indexStartStory);
+    console.log("title", title)
+    formattedHTML += `<strong>${title}</strong><br>`;
+
+    //add rest of story
+    formattedHTML += storyHTML.substring(indexStartStory, storyHTML.length - 1);
+  } else {
+    formattedHTML = storyHTML;
+  }
+  els.finishedStory.innerHTML = formattedHTML;
   setScreen('results');
 };
 
@@ -98,11 +118,47 @@ const fillInBlanksFormHandler = (evt) => {
   } else {
     scrollToTop();
   }
+}; 
+
+const getWordTypes = async(prompt) => {
+  let helper = [];
+  let wordTypes = [];
+  for(let i = 0; i < prompt.length; i++) { 
+    if (prompt[i] == '[') { 
+      helper.push(i); 
+    } else if ((prompt[i] == ']') && (helper.length > 0)) { 
+      let pos = helper[helper.length - 1]; 
+      helper.pop(); 
+
+      let len = i - 1 - pos; 
+      let ans; 
+      if(pos < len) { 
+        ans = prompt.substring(pos + 1, len + 1); 
+      } else { 
+        ans = prompt.substring(pos + 1, len + pos + 1); 
+      } 
+      wordTypes.push(ans);
+    } 
+  } 
+  console.log("wordTypes", wordTypes)
+  return wordTypes;
 };
 
+const buildStory = (wordInput, wordTypes, prompt) => {
+  let story = prompt;
+  //goes through word type array and replaces with user input in the prompt
+  for(let i = 0; i < wordInput.length; i++){
+    story = story.replace(`[${wordTypes[i]}]`, `<span style="color:red">${wordInput[i]}</span>`)
+  }
+  return story;
+}
+	
+
 const init = async() => {
-  madlibPrompt = await fetchData();
-  console.log(madlibPrompt);
+  //word types from story
+  let wordTypes = [];
+  let story;
+
   // List of screens that will be seen during gameplay (entering game code, drawing, waiting, etc.)
   screens = elementDictionary([
     'start',
@@ -128,14 +184,60 @@ const init = async() => {
 
   // THE CODE BELOW IS PLACEHOLDER BEHAVIOR
 
-  els.startGameButton.onclick = () => promptToFillInBlanks(['Verb', 'Place', 'Thing']);
-  els.playAgainButton.onclick = () => promptToFillInBlanks(['Verb', 'Place', 'Thing']);
-  blanksFilledInCallback = (e) => {
-    const spans = e.map((f) => `<span class="filledInWord">${f}</span>`);
-    seeResults(`Let's all ${spans[0]} to the ${spans[1]}, let's all ${spans[0]} to the ${spans[1]}. Let's all ${spans[0]} to the ${spans[1]}, to get ourselves a ${spans[2]}.`);
+  //els.startGameButton.onclick = () => promptToFillInBlanks(['Verb', 'Place', 'Thing']);
+  //els.playAgainButton.onclick = () => promptToFillInBlanks(['Verb', 'Place', 'Thing']);
 
+  //replace dummy data array with wordTypes array
+  //els.startGameButton.onclick = () => promptToFillInBlanks(wordTypes);
+  els.startGameButton.onclick = () => {
+    //loading page
+    waitWithMessage("Getting Prompt...")
+
+    //grabbing story from api
+    madlibPrompt = fetchData();
+
+    madlibPrompt.then((response) => {
+      console.log("response", response);
+
+      //assign story to response
+      story = response;
+      //grab wordtypes
+      getWordTypes(response).then(types => {
+        //go to fill in the blanks 
+        promptToFillInBlanks(types);
+        wordTypes = types;
+      });
+    });
     
-    
+  };
+
+  els.playAgainButton.onclick = () => {
+    //loading page
+    waitWithMessage("Getting Prompt...")
+
+    //grabbing story from api
+    madlibPrompt = fetchData();
+
+    madlibPrompt.then((response) => {
+      console.log("response", response);
+
+      //assign story to response
+      story = response;
+      //grab wordtypes
+      getWordTypes(response).then(types => {
+        //go to fill in the blanks 
+        promptToFillInBlanks(types);
+        wordTypes = types;
+      });
+    });
+  };
+
+  blanksFilledInCallback = (e) => {
+    //const spans = e.map((f) => `<span class="filledInWord">${f}</span>`);
+    //seeResults(`Let's all ${spans[0]} to the ${spans[1]}, let's all ${spans[0]} to the ${spans[1]}. Let's all ${spans[0]} to the ${spans[1]}, to get ourselves a ${spans[2]}.`);
+
+    //get string of completed story with user input, word types, and prompt
+    seeResults(buildStory(e, wordTypes, story));
   };
   
 };
