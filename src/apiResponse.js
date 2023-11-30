@@ -41,6 +41,8 @@ const generateImage = async (req, res) => {
 
   const openaiApiKey = process.env.API_KEY;
 
+  console.log(req.body);
+
   const requestData = {
     model: 'dall-e-3',
     prompt: req.body.prompt,
@@ -58,14 +60,15 @@ const generateImage = async (req, res) => {
   })
     .then(response => {
       // Handle the response from the OpenAI API
-      const data = JSON.stringify(response.data.data[0].url);
+      const data = JSON.stringify({ url: response.data.data[0].url });
+      console.log(data);
       res.writeHead(200, { 'Content-Type': 'application/json' });
       res.end(data);
     })
     .catch(error => {
       // Handle errors
-      console.log(error);
-      res.end(error.message);
+      console.log("error: ", error);
+      res.end({ error, message: error.message });
     });
 }
 

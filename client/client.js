@@ -7,20 +7,20 @@ let madLibPrompt;
 
 
 // Handle API request
- async function fetchData() {
-    const response = await fetch('/generate-story');
-    if (!response.ok) {
-      const message = `An error has occured: ${response.status}`;
-      throw new Error(message);
-    }
-  
-    const data = await response.json();
-    return data.content;
-    //  .then(response => response.json())
-    //  .then(data => { console.log(data); return data.content; })
-    //  .catch(error => {
-    //   console.log(error);
-    //  });
+async function fetchData() {
+  const response = await fetch('/generate-story');
+  if (!response.ok) {
+    const message = `An error has occured: ${response.status}`;
+    throw new Error(message);
+  }
+
+  const data = await response.json();
+  return data.content;
+  //  .then(response => response.json())
+  //  .then(data => { console.log(data); return data.content; })
+  //  .catch(error => {
+  //   console.log(error);
+  //  });
 }
 
 // Scroll to top of page
@@ -74,7 +74,7 @@ const promptToFillInBlanks = (wordTypes) => {
 // Go to results screen with story
 const seeResults = (storyHTML) => {
   let formattedHTML = "";
-  if(storyHTML.includes("Title:")) {
+  if (storyHTML.includes("Title:")) {
     //format title of story
     let indexStartStory = storyHTML.indexOf("\n");
     let title = storyHTML.substring(storyHTML.indexOf("Title:") + 7, indexStartStory);
@@ -89,6 +89,10 @@ const seeResults = (storyHTML) => {
   els.finishedStory.innerHTML = formattedHTML;
   setScreen('results');
 };
+
+const setImage = (image) => {
+  document.getElementById("storyImage").src = image;
+}
 
 // Return to start screen to display a game-stopping error
 const exitWithError = (message) => {
@@ -118,28 +122,28 @@ const fillInBlanksFormHandler = (evt) => {
   } else {
     scrollToTop();
   }
-}; 
+};
 
-const getWordTypes = async(prompt) => {
+const getWordTypes = async (prompt) => {
   let helper = [];
   let wordTypes = [];
-  for(let i = 0; i < prompt.length; i++) { 
-    if (prompt[i] == '[') { 
-      helper.push(i); 
-    } else if ((prompt[i] == ']') && (helper.length > 0)) { 
-      let pos = helper[helper.length - 1]; 
-      helper.pop(); 
+  for (let i = 0; i < prompt.length; i++) {
+    if (prompt[i] == '[') {
+      helper.push(i);
+    } else if ((prompt[i] == ']') && (helper.length > 0)) {
+      let pos = helper[helper.length - 1];
+      helper.pop();
 
-      let len = i - 1 - pos; 
-      let ans; 
-      if(pos < len) { 
-        ans = prompt.substring(pos + 1, len + 1); 
-      } else { 
-        ans = prompt.substring(pos + 1, len + pos + 1); 
-      } 
+      let len = i - 1 - pos;
+      let ans;
+      if (pos < len) {
+        ans = prompt.substring(pos + 1, len + 1);
+      } else {
+        ans = prompt.substring(pos + 1, len + pos + 1);
+      }
       wordTypes.push(ans);
-    } 
-  } 
+    }
+  }
   console.log("wordTypes", wordTypes)
   return wordTypes;
 };
@@ -147,14 +151,54 @@ const getWordTypes = async(prompt) => {
 const buildStory = (wordInput, wordTypes, prompt) => {
   let story = prompt;
   //goes through word type array and replaces with user input in the prompt
-  for(let i = 0; i < wordInput.length; i++){
+  for (let i = 0; i < wordInput.length; i++) {
     story = story.replace(`[${wordTypes[i]}]`, `<span style="color:red">${wordInput[i]}</span>`)
   }
   return story;
 }
-	
 
-const init = async() => {
+const buildUnformattedStory = (wordInput, wordTypes, prompt) => {
+  let story = prompt;
+  //goes through word type array and replaces with user input in the prompt
+  for (let i = 0; i < wordInput.length; i++) {
+    story = story.replace(`[${wordTypes[i]}]`, `${wordInput[i]}`)
+  }
+  return story;
+}
+
+const generateImage = async (prompt) => {
+  try {
+    return await fetch('/generate-image', {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ prompt }),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        return data;
+      });
+  } catch (err) {
+    console.log(err);
+  }
+  // const response = await fetch('/generate-image');
+  // if (!response.ok) {
+  //   const message = `An error has occured: ${response.status}`;
+  //   throw new Error(message);
+  // }
+
+  // const data = await response.json();
+  // return data.content;
+  //  .then(response => response.json())
+  //  .then(data => { console.log(data); return data.content; })
+  //  .catch(error => {
+  //   console.log(error);
+  //  });
+}
+
+
+const init = async () => {
   //word types from story
   let wordTypes = [];
   let story;
@@ -208,7 +252,7 @@ const init = async() => {
         wordTypes = types;
       });
     });
-    
+
   };
 
   els.playAgainButton.onclick = () => {
@@ -232,14 +276,23 @@ const init = async() => {
     });
   };
 
-  blanksFilledInCallback = (e) => {
+  blanksFilledInCallback = async (e) => {
     //const spans = e.map((f) => `<span class="filledInWord">${f}</span>`);
     //seeResults(`Let's all ${spans[0]} to the ${spans[1]}, let's all ${spans[0]} to the ${spans[1]}. Let's all ${spans[0]} to the ${spans[1]}, to get ourselves a ${spans[2]}.`);
 
     //get string of completed story with user input, word types, and prompt
     seeResults(buildStory(e, wordTypes, story));
+
+    // get an image
+    const imageResponse = await generateImage(buildUnformattedStory(e, wordTypes, story));
+    console.log(imageResponse);
+    if (imageResponse.error) {
+      return;
+    } else {
+      setImage(imageResponse.url);
+    }
   };
-  
+
 };
 
 window.onload = init;
