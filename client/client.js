@@ -32,10 +32,6 @@ const fetchStory = async () => {
   return data.content;
 };
 
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
 // Validate "fill in the blanks" form input and call "blanksFilledInCallback"
 // with the user's respectively-ordered inputs if successful
 const fillInBlanksFormHandler = (evt) => {
