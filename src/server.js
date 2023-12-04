@@ -1,35 +1,26 @@
-const http = require('http');
-const url = require('url');
+const express = require('express');
+const bodyParser = require('body-parser');
 const htmlHandler = require('./htmlResponses.js');
 const apiHandler = require('./apiResponse.js');
 // Import OpenAI
-require("dotenv");
-//config();
-require("openai");
+require('dotenv').config();
+require('openai');
 
-const port = process.env.PORT || process.env.NODE_PORT || 3000;
+const PORT = process.env.PORT || process.env.NODE_PORT || 3000;
 
-const urlStruct = {
-  '/': htmlHandler.getIndex,
-  '/style.css': htmlHandler.getCSS,
-  '/bundle.js': htmlHandler.getJS,
-  '/logo.svg': htmlHandler.getLogo,
-  '/generate-story': apiHandler.getApi,
-  '/generate-image': apiHandler.generateImage,
-  notFound: htmlHandler.getIndex,
-};
+const app = express();
 
-const onRequest = (request, response) => {
-  const parsedUrl = url.parse(request.url, true);
-  const handlerFunction = urlStruct[parsedUrl.pathname];
-  const { query } = parsedUrl;
-  if (handlerFunction) {
-    handlerFunction(request, response, query);
-  } else {
-    urlStruct.notFound(request, response);
-  }
-};
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
 
-http.createServer(onRequest).listen(port, () => {
-  console.log(`Listening on 127.0.0.1:${port}`);
+app.get('/style.css', htmlHandler.getCSS);
+app.get('/bundle.js', htmlHandler.getJS);
+app.get('/logo.svg', htmlHandler.getLogo);
+app.get('/generate-story', apiHandler.getApi);
+app.post('/generate-image', apiHandler.generateImage);
+app.get('/', htmlHandler.getIndex);
+
+app.listen(PORT, () => {
+  console.clear();
+  console.log(`Server listening on 127.0.0.1:${PORT}\n`);
 });

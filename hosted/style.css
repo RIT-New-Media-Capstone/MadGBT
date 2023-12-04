@@ -20,17 +20,17 @@ body {
   margin: 1rem auto;
 }
 
-#screens>div {
+#screens>div, #storyImageContainer>div {
   text-align: center;
   display: none;
 }
 
-#screens>div>* {
+#screens>div>*, #storyImageContainer>div>* {
   margin-left: auto;
   margin-right: auto;
 }
 
-#screens>div.activeScreen {
+#screens>div.activeScreen, #storyImageContainer>div.activeStoryImage {
   display: block;
 }
 
@@ -44,6 +44,15 @@ body {
 
 #fillInBlanksForm, #playAgainButton {
   margin-bottom: 2rem;
+}
+
+#storyImageContainer {
+  margin-bottom: 1rem;
+}
+
+#storyImage {
+  width: 50vw;
+  height: 50vw;
 }
 
 #fillInBlanksFormBlanks {
@@ -88,6 +97,10 @@ input[type=text].formMissedRequirement {
   margin-left: auto;
   margin-right: auto;
   text-align: justify;
+}
+
+#storyImage {
+  display: block;
 }
 
 @media only screen and (max-width: 720px) {

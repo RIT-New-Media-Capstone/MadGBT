@@ -44,6 +44,28 @@
     <div id="resultsScreen">
       <p>Without further ado: your story!</p>
       <p id="finishedStory">(Story goes here)</p>
+      <div id="storyImageContainer">
+        <div id="waitingStoryImage" class="activeStoryImage">
+          <p id="waitingStoryImageMessage">Waiting...</p>
+          <div class="lds-grid">
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+          </div>
+        </div>
+        <div id="showStoryImage">
+          <img id="storyImage" alt="Story image" />
+        </div>
+        <div id="errorStoryImage">
+          <p id="storyImageErrorMessage" class="text-danger"></p>
+        </div>
+      </div>
       <button id="playAgainButton" type="button" class="btn btn-primary">Play again</button>
     </div>
   </div>
